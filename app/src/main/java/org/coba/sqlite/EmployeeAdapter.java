@@ -1,6 +1,7 @@
 package org.coba.sqlite;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
@@ -63,6 +64,29 @@ public class EmployeeAdapter extends ArrayAdapter<Employee> {
             @Override
             public void onClick(View view) {
                 updateEmployee(employee);
+            }
+        });
+
+        buttonDelete.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mCtx);
+                builder.setTitle("Are you sure?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String sql = "DELETE FROM employees WHERE id = ?";
+                        mDatabase.execSQL(sql, new Integer[]{employee.getId()});
+                        reloadEmployeesFromDatabase();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 
@@ -141,5 +165,5 @@ public class EmployeeAdapter extends ArrayAdapter<Employee> {
         notifyDataSetChanged();
     }
 
-    
+
 }
